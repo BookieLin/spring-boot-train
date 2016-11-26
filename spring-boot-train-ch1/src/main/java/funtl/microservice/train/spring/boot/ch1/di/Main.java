@@ -9,9 +9,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class Main {
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DiConfig.class);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DiConfig.class); // 1
 
-		UseFunctionService useFunctionService = context.getBean(UseFunctionService.class);
+		UseFunctionService useFunctionService = context.getBean(UseFunctionService.class); // 2
 		System.out.println(useFunctionService.sayHello(" DI"));
 
 		context.close();

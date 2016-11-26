@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  *          JSR-250的：@Resource
  *      是等效的
  */
-@Service
+@Service // 1
 public class UseFunctionService {
-	@Autowired
+	@Autowired // 2
 	FunctionService functionService;
 
 	public String sayHello(String word) {

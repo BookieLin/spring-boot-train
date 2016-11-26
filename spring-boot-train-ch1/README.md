@@ -24,3 +24,26 @@ Spring 的发展过程：
 
 &#8195;&#8195;Spring 使用简单的POJO（Plain Old Java Object，即无任何限制的普通 Java 对象）来进行企业级开发。每一个被 Spring 管理的 Java 对象都称之为 Bean；而 Spring 提供了一个 IoC 容器用来初始化对象，解决对象间的依赖管理和对象的使用
 
+1. Spring 的模块
+
+Spring 是模块化的，这意味着你可以只使用你需要的 Spring 模块。如图 1-1 所示。
+
+![图 1-1](http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/images/spring-overview.png)
+
+图 1-1 中的每一个最小单元，Spring 都至少有一个对应的 jar 包。
+
+(1) 核心容器（Core Container）
+
+Spring-Core：核心工具类，Spring 其他模块大量使用 Spring-Core
+
+Spring-Beans：Spring 定义 Bean 的支持
+
+Spring-Context：运行时 Spring 容器
+
+Spring-Context-Support：Spring 容器对第三方包的集成支持
+
+Spring-Expression：使用表达式语言在运行时查询和操作对象
+
+(2) 消息（Messaging）
+
+Spring-Messaging：对消息架构和协议的支持

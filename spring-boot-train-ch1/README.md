@@ -159,3 +159,105 @@ Spring IoC 容器（ApplicationContext）负责创建 Bean，并通过将功能�
 
 **本节演示基于注解的 Bean 的初始化和依赖注入，Spring 容器类选用 AnnotationConfigApplicationContext**
 
+**编写功能类的 Bean**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.di;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * 功能类的 Bean
+ * (1) 使用 @Service 注解声明当前 FunctionService 类是 Spring 管理的一个 Bean。其中，使用@Component、@Service、@Repository、@Controller是等效的，可根据需要选用
+ */
+@Service
+public class FunctionService {
+	public String sayHello(String word) {
+		return "Hello".concat(word).concat("!");
+	}
+}
+
+```
+
+**使用功能类的 Bean**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.di;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 使用功能类的 Bean
+ * (1) 使用 @Service 注解声明当前 UseFunctionService 类是 Spring 管理的一个 Bean。
+ * (2) 使用 @Autowired 将 FunctionService 的实体 Bean 注入到 UseFunctionService 中，让 UseFunctionService 具备 FunctionService 的功能
+ *      此处使用：
+ *          JSR-330的：@Inject
+ *          JSR-250的：@Resource
+ *      是等效的
+ */
+@Service
+public class UseFunctionService {
+	@Autowired
+	FunctionService functionService;
+
+	public String sayHello(String word) {
+		return functionService.sayHello(word);
+	}
+}
+
+```
+
+**配置类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.di;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 配置类
+ * (1) @Configuration 声明当前类是一个配置类
+ * (2) @ComponentScan 自动扫描包下所有使用 @Service、@Component、@Repository、@Controller 的类，并注册为 Bean
+ */
+@Configuration
+@ComponentScan("funtl.microservice.train.spring.boot.ch1.di")
+public class DiConfig {
+}
+
+```
+
+**运行**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.di;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * 运行
+ * (1) 使用 AnnotationConfigApplicationContext 作为 Spring 容器，接受输入一个配置类作为参数
+ * (2) 获得声明配置的 UseFunctionService 的 Bean
+ */
+public class Main {
+	public static void main(String[] args) {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DiConfig.class);
+
+		UseFunctionService useFunctionService = context.getBean(UseFunctionService.class);
+		System.out.println(useFunctionService.sayHello(" DI"));
+
+		context.close();
+	}
+}
+
+```
+
+**运行结果**
+
+[](url "title")
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch1-001.png">

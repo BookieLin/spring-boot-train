@@ -153,9 +153,9 @@ Spring IoC 容器（ApplicationContext）负责创建 Bean，并通过将功能�
 
 **注：请将注解注解在属性上，优点是代码更少，层次更清晰**
 
-##### 3.1.2 示例
-
 **本节演示基于注解的 Bean 的初始化和依赖注入，Spring 容器类选用 AnnotationConfigApplicationContext**
+
+##### 3.1.2 示例
 
 **编写功能类的 Bean**
 
@@ -389,3 +389,210 @@ public class Main {
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch1-002.png">
+
+#### 3.3 AOP
+
+##### 3.3.1 说明
+
+AOP：面向切面编程，相对于 OOP 面向对象编程
+
+Spring 的 AOP 存在的目的是为了解耦，AOP 可以让一组类共享相同的行为。在 OOP 中只能通过继承类和实现接口，来使代码的耦合度增强，且类继承只能为单继承，阻碍更多行为添加到一组类上，AOP 弥补了 OOP 的不足
+
+Spring 支持 AspectJ 的注解式切面编程
+
+* 使用 @Aspect 声明是一个切面
+* 使用 @After、@Before、@Around 定义建言（advice），可直接将拦截规则（切点）作为参数
+* 其中 @After、@Before、@Around 参数的拦截规则为切点（PointCut），为了使切点复用，可使用 @PointCut 专门定义拦截规则，然后在 @After、@Before、@Around 的参数中调用
+* 其中符合条件的每一个被拦截处为连接点（JoinPoint）
+
+**本节示例将演示基于注解拦截和基于方法规则拦截两种方式，演示一种模拟记录操作的日志系统的实现。其中注解式拦截能够很好地控制要拦截的粒度和获得更丰富的信息，Spring 本身在事务处理（@Transcational）和数据缓存（@Cacheable）等上面都使用此种形式的拦截**
+
+##### 3.3.2 示例
+
+**添加 Spring AOP 支持及 AspectJ 依赖**
+
+```xml
+
+<!-- Spring AOP 支持 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-aop</artifactId>
+</dependency>
+
+<!-- AspectJ 支持 -->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjrt</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+</dependency>
+
+```
+
+**拦截规则的注解**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * 拦截规则的注解
+ * 注解说明：注解本身是没有功能的，就和 xml 一样。注解和 xml 都是一种元数据。元数据即解释数据的数据，这就是所谓配置
+ */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Action {
+	String name();
+}
+
+```
+
+**使用注解的被拦截类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * 使用注解的被拦截类
+ */
+@Service
+public class DemoAnnotationService {
+	@Action(name = "注解式拦截的 add 操作")
+	public void add() {}
+}
+
+```
+
+**使用方法规则的被拦截类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import org.springframework.stereotype.Service;
+
+/**
+ * 使用方法规则的被拦截类
+ */
+@Service
+public class DemoMethodService {
+	public void add() {}
+}
+
+```
+
+**编写切面**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+
+/**
+ * 编写切面
+ * (1) 通过 @Aspect 注解声明一个切面
+ * (2) 通过 @Component 让此切面称为 Spring 容器管理的 Bean
+ * (3) 通过 @Pointcut 注解声明切点
+ * (4) 通过 @After 注解声明一个建言，并使用 @Pointcut 定义的切点
+ * (5) 通过反射可获得注解上的属性，然后做日志记录相关的操作，下面的相同
+ * (6) 通过 @Before 注解声明一个建言，此建言直接使用拦截规则作为参数
+ */
+@Aspect // 1
+@Component // 2
+public class LogAspect {
+	@Pointcut("@annotation(funtl.microservice.train.spring.boot.ch1.aop.Action)") // 3
+	public void annotationPointCut() {};
+
+	@After("annotationPointCut()") // 4
+	public void after(JoinPoint joinPoint) {
+		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+		Method method = signature.getMethod();
+		Action action = method.getAnnotation(Action.class);
+		System.out.println("注解式拦截：".concat(action.name())); // 5
+	}
+
+	@Before("execution(* funtl.microservice.train.spring.boot.ch1.aop.DemoMethodService.*(..))") // 6
+	public void before(JoinPoint joinPoint) {
+		MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+		Method method = signature.getMethod();
+		System.out.println("方法规则式拦截：".concat(method.getName()));
+	}
+}
+
+```
+
+**配置类***
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+
+/**
+ * 配置类
+ */
+@Configuration
+@ComponentScan("funtl.microservice.train.spring.boot.ch1.aop")
+@EnableAspectJAutoProxy // 1
+public class AopConfig {
+
+}
+
+```
+
+**运行***
+
+```java
+
+package funtl.microservice.train.spring.boot.ch1.aop;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * 运行类
+ */
+public class Main {
+	public static void main(String[] args) {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AopConfig.class);
+
+		DemoAnnotationService demoAnnotationService = context.getBean(DemoAnnotationService.class);
+		DemoMethodService demoMethodService = context.getBean(DemoMethodService.class);
+
+		demoAnnotationService.add();
+
+		demoMethodService.add();
+
+		context.close();
+	}
+}
+
+```
+
+**运行结果***
+
+[](url "title")
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch1-003.png">

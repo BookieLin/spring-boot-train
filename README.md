@@ -25,3 +25,6 @@ Spring 在提升 Java EE 开发效率的脚步上从未停止过，而 Spring Bo
 * [第一章 Spring 基础](https://github.com/topsale/spring-boot-train/tree/master/spring-boot-train-ch1)
     * Spring 简史
     * Spring 概述
+* [第二章 Spring 常用配置](https://github.com/topsale/spring-boot-train/tree/master/spring-boot-train-ch2)
+    * Bean 的 Scope
+    * Spring EL 和资源调用

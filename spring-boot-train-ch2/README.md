@@ -104,3 +104,13 @@ public class Main {
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-001.png">
+
+## Spring EL 和资源调用
+
+### 说明
+
+Spring EL - Spring 表达式语言，支持在 xml 和注解中使用表达式，类似于 JSP 的 EL 表达式语言
+
+Spring 开发中经常涉及调用各种资源的情况，包含普通文件、网址、配置文件、系统环境变量等，我们可以使用 Spring 的表达式语言实现资源的注入
+
+Spring 主要在注解 @Value 的参数中使用表达式

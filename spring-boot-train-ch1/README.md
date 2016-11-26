@@ -1,8 +1,6 @@
 # 第一章 Spring 基础
 
-## Spring 概述
-
-### Spring 简史
+## Spring 简史
 
 Spring 的发展过程：
 
@@ -18,13 +16,13 @@ Spring 的发展过程：
 
 从 Spring 3.x 到现在，Spring 提供了 Java 配置的能力，使用 Java 配置可以让你更理解你配置的 Bean 。Spring 4.x 和 Spring Boot 都推荐使用 Java 配置
 
-### Spring 概述
+## Spring 概述
 
 Spring 框架是一个轻量级的企业级开发的一站式解决方案。所谓解决方案就是可以基于 Spring 解决 Java EE 开发的所有问题。Spring 框架主要提供了 IoC 容器、AOP、数据访问、Web开发、消息、测试等相关技术的支持
 
 Spring 使用简单的POJO（Plain Old Java Object，即无任何限制的普通 Java 对象）来进行企业级开发。每一个被 Spring 管理的 Java 对象都称之为 Bean；而 Spring 提供了一个 IoC 容器用来初始化对象，解决对象间的依赖管理和对象的使用
 
-#### 1. Spring 的模块
+### 1. Spring 的模块
 
 Spring 是模块化的，这意味着你可以只使用你需要的 Spring 模块。如图 1-1 所示。
 
@@ -76,7 +74,7 @@ Spring-OXM：提供对对象/xml映射技术的支持
 
 Spring-JMS：提供对JMS的支持
 
-#### 2. Spring 的生态
+### 2. Spring 的生态
 
 Spring 发展到现在已经不仅仅是 Spring 框架本身的内容，Spring 目前提供了大量的基于 Spring 的项目，可以用来更深入地降低我们的开发难度，提高开发效率
 
@@ -114,7 +112,7 @@ Spring LDAP：简化实用 LDAP 开发
 
 Spring Session：提供一个 API 及实现来管理用户会话信息
 
-#### 3. Spring 基础配置
+### 3. Spring 基础配置
 
 Spring 框架本身有四大原则：
 
@@ -128,9 +126,9 @@ Spring 框架本身有四大原则：
 
 Spring 所有功能的设计和实现都是基于此四大原则的
 
-##### 3.1 依赖注入
+#### 3.1 依赖注入
 
-###### 3.1.1 说明
+##### 3.1.1 说明
 
 控制翻转（Inversion of Control-IOC）和依赖注入（dependency injection-DI）在 Spring 环境下是等同的概念，控制翻转是通过依赖注入实现的。所谓依赖注入指的是容器负责创建对象和维护对象间的依赖关系，而不是通过对象本身负责自己的创建和解决自己的依赖。
 
@@ -155,7 +153,7 @@ Spring IoC 容器（ApplicationContext）负责创建 Bean，并通过将功能�
 
 **注：请将注解注解在属性上，优点是代码更少，层次更清晰**
 
-###### 3.1.2 示例
+##### 3.1.2 示例
 
 **本节演示基于注解的 Bean 的初始化和依赖注入，Spring 容器类选用 AnnotationConfigApplicationContext**
 
@@ -262,9 +260,9 @@ public class Main {
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch1-001.png">
 
-##### 3.2 Java 配置
+#### 3.2 Java 配置
 
-###### 3.2.1 说明
+##### 3.2.1 说明
 
 Java 配置是 Spring 4.x 推荐的配置方式，可以完全替代 xml 配置
 
@@ -275,7 +273,7 @@ Java 配置是通过 @Configuration 和 @Bean 来实现的
 * @Configuration 声明当前类是一个配置类，相当于一个 Spring 配置的 xml 文件
 * @Bean 注解在方法上，声明当前方法的返回值为一个 Bean
 
-###### 3.2.2 示例
+##### 3.2.2 示例
 
 **编写功能类的 Bean**
 

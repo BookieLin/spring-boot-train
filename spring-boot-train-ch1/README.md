@@ -542,7 +542,7 @@ public class LogAspect {
 
 ```
 
-**配置类***
+**配置类**
 
 ```java
 
@@ -564,7 +564,7 @@ public class AopConfig {
 
 ```
 
-**运行***
+**运行**
 
 ```java
 
@@ -592,7 +592,7 @@ public class Main {
 
 ```
 
-**运行结果***
+**运行结果**
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch1-003.png">

@@ -413,3 +413,111 @@ public class Main {
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-003.png">
+
+## Profile
+
+### 说明
+
+Profile 为在不同环境下使用不同配置提供了支持（开发环境下的配置和生产环境下的配置肯定是不同的，例如，数据库的配置）
+
+* 通过设定 Environment 的 ActiveProfiles 来设定当前 Context 需要使用的配置环境。在开发中使用 @Profile 注解类或者方法，达到在不同情况下选择实例化不同的 Bean
+* 通过设定 JVM 的 spring.profiles.active 参数来设置配置环境
+* Web 项目设置在 Servlet 的 context parameter 中
+
+### 示例
+
+**示例 Bean**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.profile;
+
+/**
+ * 示例 Bean
+ */
+public class DemoBean {
+    private String content;
+
+    public DemoBean(String content) {
+        super();
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+}
+
+```
+
+**配置类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.profile;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+/**
+ * 配置类
+ * (1) Profile 为 dev 时实例化 devDemoBean
+ * (2) Profile 为 prod 时实例化 prodDemoBean
+ */
+@Configuration
+public class ProfileConfig {
+    @Bean
+    @Profile("dev") // 1
+    public DemoBean devDemoBean() {
+        return new DemoBean("from development profile");
+    }
+
+    @Bean
+    @Profile("prod") // 2
+    public DemoBean prodDemoBean() {
+        return new DemoBean("from production profile");
+    }
+}
+
+```
+
+**运行**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.profile;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * (1) 先将活动的 Profile 设置为 prod
+ * (2) 后置注册 Bean 配置类，不然会报 Bean 未定义错误
+ * (3) 刷新容器
+ */
+public class Main {
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+
+        context.getEnvironment().setActiveProfiles("prod"); // 1
+        context.register(ProfileConfig.class); // 2
+        context.refresh(); // 3
+
+        DemoBean demoBean = context.getBean(DemoBean.class);
+
+        System.out.println(demoBean.getContent());
+
+        context.close();
+    }
+}
+
+```
+
+**运行结果**
+
+[](url "title")
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-004.png">

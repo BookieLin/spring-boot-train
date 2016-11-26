@@ -287,3 +287,129 @@ public class Main {
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-002.png">
+
+## Bean 的初始化和销毁
+
+### 说明
+
+在我们实际开发的时候，经常会遇到在 Bean 使用之前或者之后做些必要的操作，Spring 对 Bean 的生命周期的操作提供了支持。在使用 Java 配置和注解配置下提供如下两种方式：
+
+* Java 配置方式：使用 @Bean 的 initMethod 和 destroyMethod（相当于 xml 配置的 init-method 和 destroy-method）
+* 注解方式：利用 JSR-250 的 @PostConstruct 和 @PreDestroy
+
+### 示例
+
+**使用 @Bean 形式的 Bean**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.prepost;
+
+/**
+ * 使用 @Bean 形式的 Bean
+ */
+public class BeanWayService {
+    public void init() {
+        System.out.println("@Bean-init-method");
+    }
+
+    public BeanWayService() {
+        super();
+        System.out.println("初始化构造函数-BeanWayService");
+    }
+
+    public void destroy() {
+        System.out.println("@Bean-destroy-method");
+    }
+}
+
+```
+
+**JSR-250 形式的 Bean**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.prepost;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+/**
+ * JSR-250 形式的 Bean
+ * (1) @PostConstruct 在构造函数执行完之后执行
+ * (2) @PreDestroy 在 Bean 销毁之前执行
+ */
+public class JSR250WayService {
+    @PostConstruct // 1
+    public void init() {
+        System.out.println("jsr250-init-method");
+    }
+
+    public JSR250WayService() {
+        super();
+        System.out.println("初始化构造函数-JSR250WayService");
+    }
+
+    @PreDestroy // 2
+    public void destroy() {
+        System.out.println("jsr250-destroy-method");
+    }
+}
+
+```
+
+**配置类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.prepost;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 配置类
+ * (1) initMethod 和 destroyMethod 指定 BeanWayService 类的 init 和 destroy 方法在构造之后、Bean 销毁之前执行
+ */
+@Configuration
+@ComponentScan("funtl.microservice.train.spring.boot.ch2.prepost")
+public class PrePostConfig {
+    @Bean(initMethod = "init", destroyMethod = "destroy") // 1
+    BeanWayService beanWayService() {
+        return new BeanWayService();
+    }
+
+    @Bean
+    JSR250WayService jsr250WayService() {
+        return new JSR250WayService();
+    }
+}
+
+```
+
+**运行**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.prepost;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class Main {
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(PrePostConfig.class);
+
+        BeanWayService beanWayService = context.getBean(BeanWayService.class);
+        JSR250WayService jsr250WayService = context.getBean(JSR250WayService.class);
+
+        context.close();
+    }
+}
+
+```
+
+**运行结果**
+
+[](url "title")
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-003.png">

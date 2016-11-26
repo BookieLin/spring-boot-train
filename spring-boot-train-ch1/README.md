@@ -113,3 +113,49 @@ Spring Web Services：提供了基于协议有限的 SOAP/Web 服务
 Spring LDAP：简化实用 LDAP 开发
 
 Spring Session：提供一个 API 及实现来管理用户会话信息
+
+#### 3. Spring 基础配置
+
+Spring 框架本身有四大原则：
+
+(1) 使用 POJO 进行轻量级和最小侵入式开发
+
+(2) 通过依赖注入和基于接口编程实现松耦合
+
+(3) 通过 AOP 的默认习惯进行声明式编程
+
+(4) 使用 AOP 和模版（template）减少模式化代码
+
+Spring 所有功能的设计和实现都是基于此四大原则的
+
+##### 3.1 依赖注入
+
+###### 3.1.1 说明
+
+控制翻转（Inversion of Control-IOC）和依赖注入（dependency injection-DI）在 Spring 环境下是等同的概念，控制翻转是通过依赖注入实现的。所谓依赖注入指的是容器负责创建对象和维护对象间的依赖关系，而不是通过对象本身负责自己的创建和解决自己的依赖。
+
+依赖注入的主要目的是为了解耦，提现一种“组合”的理念。如果你希望你的类具备某项功能的时候，是继承自一个具有此类功能的父类好呢？还是组合另外一个具有这个功能的类好呢？答案是不言而喻的，继承一个父类，子类将于父类耦合，组合另外一个类则使耦合度大大降低
+
+Spring IoC 容器（ApplicationContext）负责创建 Bean，并通过将功能类 Bean 注入到你需要的 Bean 中。Spring 提供使用 xml、注解、Java 配置、groovy 配置实现 Bean 的创建和注入
+
+无论是 xml 配置、注解配置还是 Java 配置、都被称为配置元数据，所谓元数据即描述数据的数据。元数据本身不具备任何可执行的能力，只能通过外界代码来对这些元数据进行解析后进行一些有意义的操作。Spring 容器解析这些元数据进行 Bean 初始化、配置和管理依赖。
+
+声明 Bean 的注解：
+
+* @Component 组件，没有明确的角色
+* @Service 在业务逻辑层（service 层）使用
+* @Repository 在数据访问层（dao 层）使用
+* @Controller 在展现层（MVC -> Spring MVC）使用
+
+注入 Bean 的注解，一般情况下通用
+
+* @Autowired：Spring 提供的注解
+* @Inject：JSR-330 提供的注解
+* @Resource：JSR-250 提供的注解
+
+**注：请将注解注解在属性上，优点是代码更少，层次更清晰**
+
+###### 3.1.2 示例
+
+**本节演示基于注解的 Bean 的初始化和依赖注入，Spring 容器类选用 AnnotationConfigApplicationContext**
+

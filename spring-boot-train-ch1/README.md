@@ -24,7 +24,7 @@ Spring 框架是一个轻量级的企业级开发的一站式解决方案。所�
 
 Spring 使用简单的POJO（Plain Old Java Object，即无任何限制的普通 Java 对象）来进行企业级开发。每一个被 Spring 管理的 Java 对象都称之为 Bean；而 Spring 提供了一个 IoC 容器用来初始化对象，解决对象间的依赖管理和对象的使用
 
-1. Spring 的模块
+#### 1. Spring 的模块
 
 Spring 是模块化的，这意味着你可以只使用你需要的 Spring 模块。如图 1-1 所示。
 
@@ -76,7 +76,7 @@ Spring-OXM：提供对对象/xml映射技术的支持
 
 Spring-JMS：提供对JMS的支持
 
-2. Spring 的生态
+#### 2. Spring 的生态
 
 Spring 发展到现在已经不仅仅是 Spring 框架本身的内容，Spring 目前提供了大量的基于 Spring 的项目，可以用来更深入地降低我们的开发难度，提高开发效率
 

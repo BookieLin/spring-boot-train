@@ -30,3 +30,4 @@ Spring 在提升 Java EE 开发效率的脚步上从未停止过，而 Spring Bo
     * Spring EL 和资源调用
     * Bean 的初始化和销毁
     * Profile
+    * 事件（Application Event）

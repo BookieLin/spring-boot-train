@@ -521,3 +521,146 @@ public class Main {
 
 [](url "title")
 <img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-004.png">
+
+## 事件（Application Event）
+
+### 说明
+
+Spring 的事件（Application Event）为 Bean 与 Bean 之间的消息通信提供了支持。当一个 Bean 处理完一个任务之后，希望另外一个 Bean 知道并能做相应的处理，这时我们就需要让另外一个 Bean 监听当前 Bean 所发送的事件
+
+Spring 的事件需要遵循如下流程：
+
+* 自定义事件，继承 ApplicationEvent
+* 定义事件监听器，事件 ApplicationListener
+* 使用容器发布事件
+
+### 示例
+
+**自定义事件**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.event;
+
+import org.springframework.context.ApplicationEvent;
+
+/**
+ * 自定义事件
+ */
+public class DemoEvent extends ApplicationEvent {
+    private String msg;
+
+    public DemoEvent(Object source, String msg) {
+        super(source);
+        this.msg = msg;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+}
+
+```
+
+**事件监听器**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.event;
+
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
+
+/**
+ * 事件监听器
+ * (1) 实现 ApplicationListener 接口，并指定监听的事件类型
+ * (2) 使用 onApplicationEvent 方法对消息进行接受处理
+ */
+@Component
+public class DemoListener implements ApplicationListener<DemoEvent> { // 1
+    @Override
+    public void onApplicationEvent(DemoEvent demoEvent) { // 2
+        String msg = demoEvent.getMsg();
+
+        System.out.println("我(bean-demoListener)接收到了bean-demoPublisher发布的消息：" + msg);
+    }
+}
+
+```
+
+**事件发布类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.event;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
+/**
+ * 事件发布类
+ * (1) 注入 ApplicationContext 用来发布事件
+ * (2) 使用 ApplicationContext 的 publishEvent 方法来发布
+ */
+@Component
+public class DemoPublisher {
+    @Autowired
+    ApplicationContext applicationContext; // 1
+
+    public void publisher(String msg) {
+        applicationContext.publishEvent(new DemoEvent(this, msg)); // 2
+    }
+}
+
+```
+
+**配置类**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.event;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 配置类
+ */
+@Configuration
+@ComponentScan("funtl.microservice.train.spring.boot.ch2.event")
+public class EventConfig {
+}
+
+```
+
+**运行**
+
+```java
+
+package funtl.microservice.train.spring.boot.ch2.event;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+public class Main {
+    public static void main(String[] args) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(EventConfig.class);
+
+        DemoPublisher demoPublisher = context.getBean(DemoPublisher.class);
+
+        demoPublisher.publisher("hello application event");
+
+        context.close();
+    }
+}
+
+```
+
+**运行结果**
+
+[](url "title")
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-005.png">

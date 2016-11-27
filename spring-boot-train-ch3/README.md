@@ -131,4 +131,4 @@ public class Main {
 **运行接口**
 
 [](url "title")
-<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch2-006.png">
+<img src="https://raw.githubusercontent.com/topsale/spring-boot-train/master/screenshots/ch3-001.png">
